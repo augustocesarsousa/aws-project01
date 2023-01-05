@@ -1,5 +1,7 @@
 package br.com.acsousa.aws_project01.controller;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +20,14 @@ public class TestController {
         LOG.info("Test controller - name {}", name);
 
         return ResponseEntity.ok("Name: " + name);
+    }
+
+    @GetMapping("/time")
+    public ResponseEntity<?> getTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        
+        LOG.info("Test controller - time {}", localDateTime);
+
+        return ResponseEntity.ok("time: " + localDateTime);
     }
 }
