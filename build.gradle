@@ -27,7 +27,7 @@ sourceCompatibility = '11'
 
 bootJar {
 	baseName = 'aws_project01'
-	version =  '1.1.1'
+	version =  '1.2.1'
 	mainClass = "br.com.acsousa.aws_project01.AwsProject01Application"
 }
 
