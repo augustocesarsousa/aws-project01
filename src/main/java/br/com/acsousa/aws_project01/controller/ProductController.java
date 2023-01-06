@@ -15,18 +15,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.acsousa.aws_project01.enums.EventType;
 import br.com.acsousa.aws_project01.model.Product;
 import br.com.acsousa.aws_project01.repository.ProductRepository;
+import br.com.acsousa.aws_project01.service.ProductPublisher;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
     private ProductRepository productRepository;
+    private ProductPublisher productPublisher;
 
     @Autowired
-    public ProductController(ProductRepository productRepository) {
+    public ProductController(ProductRepository productRepository, ProductPublisher productPublisher) {
         this.productRepository = productRepository;
+        this.productPublisher = productPublisher;
     }
 
     @GetMapping
@@ -48,6 +52,8 @@ public class ProductController {
     public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
         Product productCreated = productRepository.save(product);
 
+        productPublisher.publishProductEvent(productCreated, EventType.PRODUCT_CREATED, "Sushi");
+
         return new ResponseEntity<Product>(productCreated, HttpStatus.CREATED);
     }
 
@@ -57,6 +63,8 @@ public class ProductController {
             product.setId(id);
 
             Product productUpdated = productRepository.save(product);
+
+            productPublisher.publishProductEvent(productUpdated, EventType.PRODUCT_UPDATE, "Zeus");
 
             return new ResponseEntity<Product>(productUpdated,
                     HttpStatus.OK);
@@ -72,6 +80,8 @@ public class ProductController {
             Product product = optProduct.get();
 
             productRepository.delete(product);
+
+            productPublisher.publishProductEvent(product, EventType.PRODUCT_DELETED, "Nino");
 
             return new ResponseEntity<Product>(product, HttpStatus.OK);
         } else {
