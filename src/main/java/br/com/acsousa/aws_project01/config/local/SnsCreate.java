@@ -20,26 +20,27 @@ public class SnsCreate {
     private static final Logger LOGGER = LoggerFactory.getLogger(SnsCreate.class);
 
     private final String productEventsTopic;
-    private final AmazonSNS snsCLiente;
+    private final AmazonSNS snsClient;
 
     
 
     public SnsCreate() {
-        this.snsCLiente = AmazonSNSClient.builder()
+        this.snsClient = AmazonSNSClient.builder()
             .withEndpointConfiguration(new AwsClientBuilder
                 .EndpointConfiguration("http://localhost:4566", 
                 Regions.US_EAST_1.getName()))
             .withCredentials(new DefaultAWSCredentialsProviderChain())
             .build();
+
         CreateTopicRequest createTopicRequest = new CreateTopicRequest("product-events");
-        this.productEventsTopic = this.snsCLiente.createTopic(createTopicRequest).getTopicArn();
+        this.productEventsTopic = this.snsClient.createTopic(createTopicRequest).getTopicArn();
 
         LOGGER.info("SNS topic ARN: {}", this.productEventsTopic);
     }
 
     @Bean
     public AmazonSNS snsClient() {
-        return this.snsCLiente;
+        return this.snsClient;
     }
 
     @Bean(name = "productEventsTopic")
